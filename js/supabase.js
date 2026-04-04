@@ -2,12 +2,12 @@ const SUPABASE_URL = 'https://xeawqnnugytabmaixrcv.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlYXdxbm51Z3l0YWJtYWl4cmN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjk4NTksImV4cCI6MjA5MDkwNTg1OX0.KP98q2ZXDFd_DypgCx9eA0sC7IcS60D0LmOEFDhXFWM';
 
 // Initialize Supabase Client
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const api = {
   async getAllMemoDates() {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from('daily_memos')
         .select('date')
         .neq('content', '');
@@ -22,7 +22,7 @@ const api = {
 
   async getDailyMetrics(dateStr) {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from('daily_metrics')
         .select()
         .eq('date', dateStr)
@@ -43,7 +43,7 @@ const api = {
 
   async saveDailyMetrics(dateStr, val) {
     try {
-      const { error } = await supabase
+      const { error } = await supabaseClient
         .from('daily_metrics')
         .upsert({
           date: dateStr,
@@ -64,7 +64,7 @@ const api = {
 
   async getDailyMemo(dateStr) {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from('daily_memos')
         .select('content')
         .eq('date', dateStr)
@@ -80,7 +80,7 @@ const api = {
 
   async saveDailyMemo(dateStr, content) {
     try {
-      const { error } = await supabase
+      const { error } = await supabaseClient
         .from('daily_memos')
         .upsert({
           date: dateStr,
@@ -104,7 +104,7 @@ const api = {
         createdAt.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
       }
 
-      const { error } = await supabase
+      const { error } = await supabaseClient
         .from('tasks')
         .insert({
           description: description,
@@ -124,7 +124,7 @@ const api = {
 
   async updateTaskStatus(taskId, newStatus) {
     try {
-      const { error } = await supabase
+      const { error } = await supabaseClient
         .from('tasks')
         .update({
           status: newStatus,
@@ -142,7 +142,7 @@ const api = {
 
   async updateTaskContent(taskId, newDescription) {
     try {
-      const { error } = await supabase
+      const { error } = await supabaseClient
         .from('tasks')
         .update({
           description: newDescription,
@@ -160,7 +160,7 @@ const api = {
 
   async deleteTask(taskId) {
     try {
-      const { error } = await supabase
+      const { error } = await supabaseClient
         .from('tasks')
         .delete()
         .eq('task_id', taskId);
@@ -205,7 +205,7 @@ const api = {
           e = new Date(today.getTime() + 86400000);
       }
 
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from('tasks')
         .select()
         .gte('created_at', s.toISOString())
@@ -225,7 +225,7 @@ const api = {
       const s = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
       const e = new Date(s.getTime() + 86400000);
 
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from('tasks')
         .select()
         .gte('created_at', s.toISOString())
@@ -243,7 +243,7 @@ const api = {
     try {
       if (!keyword) return [];
       
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from('tasks')
         .select()
         .ilike('description', `%${keyword}%`);
