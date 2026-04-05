@@ -2,10 +2,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
 
 :root {
-  --theme-primary: #FF8C69; 
-  --theme-primary-dark: #E97451;
-  --theme-header-bg: linear-gradient(135deg, #ffa082 0%, #fa7853 100%); 
-  --theme-light-bg: #FFF0ED;      
+  --theme-primary: #f08973; 
+  --theme-primary-dark: #d66b55;
+  --theme-header-bg: #ffffff; 
+  --theme-light-bg: #fff5f2;      
   --theme-text-light: #ffffff;    
   
   --bg-color: #f8fafc;
@@ -37,10 +37,11 @@ body {
 
 /* Header */
 .header {
-  background: var(--theme-header-bg); 
-  color: var(--theme-text-light); 
+  background: var(--theme-header-bg);
+  color: var(--text-main);
   padding: 16px 20px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.1); 
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  flex-shrink: 0;
   z-index: 10;
 }
 .header-top { display: flex; justify-content: space-between; align-items: center; }
@@ -50,13 +51,11 @@ body {
 
 /* Icon Buttons */
 .icon-btn {
-  background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.1);
-  color: var(--theme-text-light); width: 36px; height: 36px;
-  border-radius: 50%; font-size: 16px; cursor: pointer; 
-  display: flex; align-items: center; justify-content: center; 
-  transition: all 0.2s ease;
+  background: rgba(0,0,0,0.05); border: none; width: 36px; height: 36px;
+  border-radius: 50%; color: var(--text-main); font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; transition: all 0.2s;
 }
-.icon-btn:hover { background: rgba(255,255,255,0.95); color: var(--theme-primary); }
+.icon-btn:hover { background: rgba(0,0,0,0.1); transform: scale(1.05); }
 
 /* Search Wrapper */
 .search-wrapper { margin-top: 12px; display: none; }
@@ -92,10 +91,13 @@ body {
 .cal-title { font-size: 20px; font-weight: 800; }
 
 .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-.cal-grid.header { margin-bottom: 4px; text-align: center; }
+.cal-grid.header { 
+  margin-bottom: 4px; text-align: center; 
+  padding: 10px 0; border-bottom: 1px solid var(--border-color);
+}
 .cal-day-label { font-size: 14px; font-weight: 700; color: var(--text-muted); padding: 4px 0; }
 .cal-day-label.sunday { color: #ef4444; }
-.cal-day-label.saturday { color: var(--theme-primary); }
+.cal-day-label.saturday { color: #3b82f6; }
 
 .cal-grid.body {
   flex: 1; 
