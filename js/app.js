@@ -131,7 +131,7 @@ function renderCalendarDays(year, month, firstDay, lastDay) {
       taskDiv.className = 'mini-task ' + (t.status === '완료' ? 'completed' : '');
       
       let desc = t.description;
-      if (desc.length > 6) desc = desc.substring(0, 6);
+      if (desc.length > 8) desc = desc.substring(0, 8);
       taskDiv.textContent = desc;
       
       div.appendChild(taskDiv);

@@ -3,7 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Todo Calendar</title>
+  <title>조대봉의 한달계획</title>
+  
+  <!-- Cute Font: Jua -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+  
   <link rel="stylesheet" href="./css/style.css?v=3.0">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -11,7 +17,10 @@
   <!-- Header -->
   <div class="header">
     <div class="header-top">
-      <h1>📅 TODO CALENDAR</h1>
+      <h1 class="header-title">
+        <img src="profile.png" alt="Profile" class="header-profile" id="headerProfileImg">
+        조대봉의 한달계획
+      </h1>
       <div class="header-actions">
         <button class="icon-btn" id="searchToggleBtn">🔍</button>
       </div>
