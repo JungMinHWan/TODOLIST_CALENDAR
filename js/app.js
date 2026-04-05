@@ -5,13 +5,13 @@ let calDisplayDate = new Date();
 let memoDatesSet = new Set();
 
 const THEMES = {
-  0: { primary: '#d32f2f', dark: '#b71c1c', light: '#ffcdd2', header: 'linear-gradient(135deg, #ef5350 0%, #d32f2f 100%)' },
-  1: { primary: '#FF8F00', dark: '#FF6F00', light: '#FFECB3', header: 'linear-gradient(135deg, #FFC107 0%, #FF8F00 100%)' },
-  2: { primary: '#ff5722', dark: '#e64a19', light: '#ffccbc', header: 'linear-gradient(135deg, #ff7043 0%, #ff5722 100%)' },
-  3: { primary: '#2979ff', dark: '#1565c0', light: '#e3f2fd', header: 'linear-gradient(135deg, #448aff 0%, #2979ff 100%)' },
-  4: { primary: '#2E7D32', dark: '#1B5E20', light: '#C8E6C9', header: 'linear-gradient(135deg, #43A047 0%, #1B5E20 100%)' },
-  5: { primary: '#FFD700', dark: '#FFA000', light: '#FFF8E1', header: 'linear-gradient(135deg, #FDD835 0%, #F57F17 40%, #FFF59D 70%, #FBC02D 100%)' },
-  6: { primary: '#5d4037', dark: '#3e2723', light: '#d7ccc8', header: 'linear-gradient(135deg, #6d4c41 0%, #4e342e 100%)' }
+  0: { primary: '#f43f5e', dark: '#be123c', light: '#ffe4e6', header: 'linear-gradient(135deg, #fb7185 0%, #e11d48 100%)' }, // 일: Rose
+  1: { primary: '#8b5cf6', dark: '#6d28d9', light: '#ede9fe', header: 'linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%)' }, // 월: Violet
+  2: { primary: '#f97316', dark: '#c2410c', light: '#ffedd5', header: 'linear-gradient(135deg, #fb923c 0%, #ea580c 100%)' }, // 화: Orange
+  3: { primary: '#0ea5e9', dark: '#0369a1', light: '#e0f2fe', header: 'linear-gradient(135deg, #38bdf8 0%, #0284c7 100%)' }, // 수: Ocean Blue
+  4: { primary: '#10b981', dark: '#047857', light: '#d1fae5', header: 'linear-gradient(135deg, #34d399 0%, #059669 100%)' }, // 목: Emerald
+  5: { primary: '#f59e0b', dark: '#b45309', light: '#fef3c7', header: 'linear-gradient(135deg, #fbbf24 0%, #d97706 100%)' }, // 금: Amber
+  6: { primary: '#6366f1', dark: '#4338ca', light: '#e0e7ff', header: 'linear-gradient(135deg, #818cf8 0%, #4f46e5 100%)' }  // 토: Indigo
 };
 
 function applyThemeByDate(dateStr) {
@@ -101,7 +101,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 async function fetchMemoDates() {
+  console.log('fetchMemoDates called');
   const dates = await api.getAllMemoDates();
+  console.log('fetchMemoDates resolved', dates);
   memoDatesSet = new Set(dates);
   renderCalendar();
 }
@@ -220,10 +222,13 @@ function changeDate(offset) {
 }
 
 async function refreshAllData() {
+  console.log('refreshAllData called');
   document.getElementById('metricsDate').textContent = formatDateKorean(currentMetricsDate);
   document.getElementById('inputDueDate').value = currentMetricsDate;
   
+  console.log('calling api.getDailyMetrics');
   const m = await api.getDailyMetrics(currentMetricsDate);
+  console.log('api.getDailyMetrics resolved', m);
   if(m) {
     document.getElementById('contractsCount').value = m.contracts_count;
     document.getElementById('dbCount').value = m.db_count;
@@ -234,7 +239,9 @@ async function refreshAllData() {
   const memo = document.getElementById('memoInput');
   memo.value = ''; memo.placeholder = '로딩 중...';
   
+  console.log('calling api.getDailyMemo');
   const r = await api.getDailyMemo(currentMetricsDate);
+  console.log('api.getDailyMemo resolved', r);
   const content = r.content || '';
   memo.value = content;
   memo.placeholder = `${formatDateKorean(currentMetricsDate)} 메모...`;
@@ -250,6 +257,7 @@ function updateMemoBadge(content) {
 }
 
 async function loadTasks() {
+  console.log('loadTasks called');
   const list = document.getElementById('taskList');
   list.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
   
@@ -259,9 +267,13 @@ async function loadTasks() {
   
   let tasks;
   if(selectedDate) {
+    console.log('calling api.getTasksByDate');
     tasks = await api.getTasksByDate(selectedDate);
+    console.log('api.getTasksByDate resolved', tasks);
   } else {
+    console.log('calling api.getTasksByPeriod');
     tasks = await api.getTasksByPeriod(currentPeriod);
+    console.log('api.getTasksByPeriod resolved', tasks);
   }
   
   clearTimeout(tid);
