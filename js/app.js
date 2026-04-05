@@ -3,6 +3,18 @@ let currentTasks = [];
 let memoDatesSet = new Set();
 let selectedDate = null; // Currently selected date in modal
 
+const HOLIDAYS = {
+  '01-01': '신정', '03-01': '삼일절', '05-05': '어린이날', '06-06': '현충일',
+  '08-15': '광복절', '10-03': '개천절', '10-09': '한글날', '12-25': '성탄절',
+  '2026-02-16': '설날연휴', '2026-02-17': '설날', '2026-02-18': '설날연휴',
+  '2026-05-24': '부처님오신날', '2026-05-25': '대체공휴일',
+  '2026-09-24': '추석연휴', '2026-09-25': '추석', '2026-09-26': '추석연휴'
+};
+function getHoliday(dateStr) {
+  const mmdd = dateStr.substring(5);
+  return HOLIDAYS[dateStr] || HOLIDAYS[mmdd] || null;
+}
+
 function getTodayString() {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -98,10 +110,17 @@ function renderCalendarDays(year, month, firstDay, lastDay) {
     // Day Number
     const numDiv = document.createElement('div');
     numDiv.className = 'cal-day-num';
-    if(dayOfWeek === 0) numDiv.classList.add('sunday');
-    if(dayOfWeek === 6) numDiv.classList.add('saturday');
+    const holidayName = getHoliday(dateStr);
+    
+    if(dayOfWeek === 0 || holidayName) numDiv.classList.add('sunday');
+    else if(dayOfWeek === 6) numDiv.classList.add('saturday');
+    
     if(memoDatesSet.has(dateStr)) numDiv.classList.add('has-memo');
+    
     numDiv.innerText = d;
+    if(holidayName) {
+      numDiv.innerHTML += ` <span style="font-size:9px; font-weight:normal;">${holidayName}</span>`;
+    }
     div.appendChild(numDiv);
 
     // Mini tasks
@@ -110,7 +129,11 @@ function renderCalendarDays(year, month, firstDay, lastDay) {
       const t = dayTasks[i];
       const taskDiv = document.createElement('div');
       taskDiv.className = 'mini-task ' + (t.status === '완료' ? 'completed' : '');
-      taskDiv.textContent = t.description;
+      
+      let desc = t.description;
+      if (desc.length > 6) desc = desc.substring(0, 6);
+      taskDiv.textContent = desc;
+      
       div.appendChild(taskDiv);
     }
     
