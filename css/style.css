@@ -4,7 +4,7 @@
 :root {
   --theme-primary: #f08973; 
   --theme-primary-dark: #d66b55;
-  --theme-header-bg: #ffffff; 
+  --theme-header-bg: #ffece5; /* 옅은 복숭아색 */
   --theme-light-bg: #fff5f2;      
   --theme-text-light: #ffffff;    
   
