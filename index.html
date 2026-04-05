@@ -3,96 +3,90 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>Todo List</title>
-  <link rel="stylesheet" href="./css/style.css?v=2.0">
+  <title>Todo Calendar</title>
+  <link rel="stylesheet" href="./css/style.css?v=3.0">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+  <!-- Header -->
   <div class="header">
     <div class="header-top">
-      <h1>📝 TODO LIST</h1>
+      <h1>📅 TODO CALENDAR</h1>
       <div class="header-actions">
         <button class="icon-btn" id="searchToggleBtn">🔍</button>
-        <button class="icon-btn" id="memoToggleBtn">
-          📝
-          <span class="memo-badge" id="memoBadge">♥</span>
-        </button>
       </div>
     </div>
-    
-    <div class="period-tabs">
-      <button class="period-tab" data-period="yesterday">어</button>
-      <button class="period-tab active" data-period="today">오</button>
-      <button class="period-tab" data-period="tomorrow">내</button>
-      <button class="period-tab" data-period="week">주</button>
-      <button class="period-tab" data-period="month">달</button>
-      <button class="calendar-btn" id="calendarBtn">📅 달력</button>
-      <span class="selected-date-label" id="selectedDateLabel"></span>
-    </div>
-    
-    <div class="custom-calendar-wrapper" id="customCalendarWrapper">
-      <div class="custom-calendar">
-        <div class="cal-header">
-          <button class="cal-nav-btn" id="prevMonthBtn">&lt;</button>
-          <span class="cal-title" id="calTitle"></span>
-          <button class="cal-nav-btn" id="nextMonthBtn">&gt;</button>
-        </div>
-        <div class="cal-grid">
-          <div class="cal-day-label">일</div><div class="cal-day-label">월</div><div class="cal-day-label">화</div>
-          <div class="cal-day-label">수</div><div class="cal-day-label">목</div><div class="cal-day-label">금</div><div class="cal-day-label">토</div>
-        </div>
-        <div class="cal-grid" id="calDaysGrid"></div>
-      </div>
-    </div>
-    
+    <!-- Search Wrapper (Hidden by default) -->
     <div class="search-wrapper" id="searchWrapper">
       <div class="action-row">
         <input type="text" class="picker-input" id="searchInput" placeholder="할일 검색...">
         <button class="action-btn" id="searchBtn">찾기</button>
       </div>
+      <!-- Search Results Area -->
+      <div class="search-results" id="searchResultsList" style="display: none; padding: 10px 0;"></div>
     </div>
+  </div>
+  
+  <!-- Full Calendar Main View -->
+  <div class="full-calendar-container">
+    <div class="cal-header-row">
+      <button class="cal-nav-btn" id="prevMonthBtn">&lt;</button>
+      <h2 class="cal-title" id="calTitle"></h2>
+      <button class="cal-nav-btn" id="nextMonthBtn">&gt;</button>
+    </div>
+    <div class="cal-grid header">
+      <div class="cal-day-label sunday">일</div>
+      <div class="cal-day-label">월</div>
+      <div class="cal-day-label">화</div>
+      <div class="cal-day-label">수</div>
+      <div class="cal-day-label">목</div>
+      <div class="cal-day-label">금</div>
+      <div class="cal-day-label saturday">토</div>
+    </div>
+    <div class="cal-grid body" id="calDaysGrid">
+      <!-- Days will be dynamically injected here -->
+    </div>
+  </div>
 
-    <div class="memo-wrapper" id="memoWrapper">
-      <textarea class="memo-area" id="memoInput" placeholder="이 날의 메모..."></textarea>
-      <div class="action-row" style="justify-content: flex-end;">
-        <span class="save-status" id="memoStatus"></span>
-        <button class="action-btn" id="saveMemoBtn">메모 저장</button>
+  <!-- Day Detail Modal -->
+  <div class="modal-overlay" id="dayModalOverlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalDateTitle"></h3>
+        <button class="icon-btn close-btn" id="closeModalBtn">×</button>
       </div>
-    </div>
-  </div>
-  
-  <div class="container">
-    <div class="metrics-section" id="metricsSection">
-      <div class="metrics-header">
-        <span class="metrics-title">📊 일일 지표</span>
-        <span class="metrics-date" id="metricsDate"></span>
+      
+      <div class="modal-body">
+        <!-- Daily Memo Section -->
+        <div class="daily-memo-section">
+          <textarea class="memo-area" id="modalMemoInput" placeholder="이 날의 메모를 입력하세요..."></textarea>
+          <div class="memo-actions">
+            <span class="save-status" id="memoStatus"></span>
+            <button class="action-btn" id="saveMemoBtn">저장</button>
+          </div>
+        </div>
+
+        <!-- Task List Section -->
+        <div class="task-list-section">
+          <h4>📝 상세 할일 목록</h4>
+          <div class="task-list" id="modalTaskList">
+            <!-- Tasks will be injected here -->
+          </div>
+        </div>
       </div>
-      <div class="metrics-grid">
-        <div class="metric-item"><label class="metric-label">전일 계약건수</label><input type="number" class="metric-input" id="contractsCount" placeholder="0"></div>
-        <div class="metric-item"><label class="metric-label">전일 DB건수</label><input type="number" class="metric-input" id="dbCount" placeholder="0"></div>
-        <div class="metric-item"><label class="metric-label">이번주 토요일 방문</label><input type="number" class="metric-input" id="saturdayVisitors" placeholder="0"></div>
-        <div class="metric-item"><label class="metric-label">이번주 일요일 방문</label><input type="number" class="metric-input" id="sundayVisitors" placeholder="0"></div>
+
+      <!-- Add Task Footer -->
+      <div class="modal-footer">
+        <div class="add-form-inner">
+          <input type="text" class="input-description" id="inputDescription" placeholder="새로운 할일을 입력하세요...">
+          <button class="btn-add" id="btnAdd">추가</button>
+        </div>
       </div>
-      <div class="metrics-save-row">
-        <span class="save-status" id="saveStatus"></span>
-        <button class="btn-save-metrics" id="btnSaveMetrics">저장</button>
-      </div>
-    </div>
-    <div class="task-list" id="taskList"><div class="loading"><div class="spinner"></div></div></div>
-  </div>
-  
-  <div class="add-form">
-    <div class="add-form-inner">
-      <div class="input-row">
-        <input type="text" class="input-description" id="inputDescription" placeholder="할일을 입력하세요">
-        <input type="date" class="input-date" id="inputDueDate">
-      </div>
-      <button class="btn-add" id="btnAdd">추가하기</button>
     </div>
   </div>
 
   <!-- Scripts -->
   <script src="./js/supabase.js"></script>
-  <script src="./js/app.js?v=2.0"></script>
+  <script src="./js/app.js?v=3.0"></script>
 </body>
 </html>

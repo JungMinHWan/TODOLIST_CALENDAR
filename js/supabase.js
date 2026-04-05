@@ -1,5 +1,5 @@
-const SUPABASE_URL = 'https://xeawqnnugytabmaixrcv.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlYXdxbm51Z3l0YWJtYWl4cmN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjk4NTksImV4cCI6MjA5MDkwNTg1OX0.KP98q2ZXDFd_DypgCx9eA0sC7IcS60D0LmOEFDhXFWM';
+const SUPABASE_URL = 'https://fhogtdagkawptvzmyvku.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZob2d0ZGFna2F3cHR2em15dmt1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzNzg2NDEsImV4cCI6MjA5MDk1NDY0MX0.UnFnKkUJsOR4CfLZ2-0R0_k9_Mt3h0B3EiQXmRw6n9A';
 
 // Initialize Supabase Client
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -20,47 +20,7 @@ const api = {
     }
   },
 
-  async getDailyMetrics(dateStr) {
-    try {
-      const { data, error } = await supabaseClient
-        .from('daily_metrics')
-        .select()
-        .eq('date', dateStr)
-        .maybeSingle();
 
-      if (error) throw error;
-      return data || { 
-        contracts_count: '', 
-        db_count: '', 
-        saturday_visitors: '', 
-        sunday_visitors: '' 
-      };
-    } catch (e) {
-      console.error(e);
-      return { contracts_count: '', db_count: '', saturday_visitors: '', sunday_visitors: '' };
-    }
-  },
-
-  async saveDailyMetrics(dateStr, val) {
-    try {
-      const { error } = await supabaseClient
-        .from('daily_metrics')
-        .upsert({
-          date: dateStr,
-          contracts_count: val.contracts_count ? parseInt(val.contracts_count) : null,
-          db_count: val.db_count ? parseInt(val.db_count) : null,
-          saturday_visitors: val.saturday_visitors ? parseInt(val.saturday_visitors) : null,
-          sunday_visitors: val.sunday_visitors ? parseInt(val.sunday_visitors) : null,
-          updated_at: new Date().toISOString()
-        });
-
-      if (error) throw error;
-      return { success: true };
-    } catch (e) {
-      console.error(e);
-      return { success: false, error: e.message };
-    }
-  },
 
   async getDailyMemo(dateStr) {
     try {
@@ -173,43 +133,13 @@ const api = {
     }
   },
 
-  async getTasksByPeriod(period) {
+  async getTasksByDateRange(startIso, endIso) {
     try {
-      const now = new Date();
-      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      let s, e;
-
-      switch (period) {
-        case 'today': 
-          s = today; 
-          e = new Date(today.getTime() + 86400000); 
-          break;
-        case 'yesterday': 
-          s = new Date(today.getTime() - 86400000); 
-          e = today; 
-          break;
-        case 'tomorrow': 
-          s = new Date(today.getTime() + 86400000); 
-          e = new Date(today.getTime() + 2 * 86400000); 
-          break;
-        case 'week': 
-          s = new Date(today.getTime() - 7 * 86400000); 
-          e = new Date(today.getTime() + 86400000); 
-          break;
-        case 'month': 
-          s = new Date(today.getTime() - 30 * 86400000); 
-          e = new Date(today.getTime() + 86400000); 
-          break;
-        default: 
-          s = today; 
-          e = new Date(today.getTime() + 86400000);
-      }
-
       const { data, error } = await supabaseClient
         .from('tasks')
         .select()
-        .gte('created_at', s.toISOString())
-        .lt('created_at', e.toISOString());
+        .gte('created_at', startIso)
+        .lt('created_at', endIso);
 
       if (error) throw error;
       return this._sortTasks(data || []);
