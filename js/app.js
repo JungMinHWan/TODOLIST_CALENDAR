@@ -31,6 +31,33 @@ function formatDateKorean(dateStr) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+  const authOverlay = document.getElementById('authOverlay');
+  if (localStorage.getItem('todolist_pass') !== '4806') {
+    authOverlay.style.display = 'flex';
+    document.getElementById('authBtn').onclick = handleAuth;
+    document.getElementById('authInput').onkeypress = (e) => { if(e.key === 'Enter') handleAuth(); };
+    setTimeout(() => document.getElementById('authInput').focus(), 100);
+    return;
+  } else {
+    authOverlay.style.display = 'none';
+    await initApp();
+  }
+});
+
+async function handleAuth() {
+  const val = document.getElementById('authInput').value;
+  if (val === '4806') {
+    localStorage.setItem('todolist_pass', '4806');
+    document.getElementById('authOverlay').style.display = 'none';
+    await initApp();
+  } else {
+    alert('비밀번호가 틀렸습니다.');
+    document.getElementById('authInput').value = '';
+    document.getElementById('authInput').focus();
+  }
+}
+
+async function initApp() {
   // Event listeners
   document.getElementById('prevMonthBtn').onclick = () => { calDisplayDate.setMonth(calDisplayDate.getMonth() - 1); refreshCalendar(); };
   document.getElementById('nextMonthBtn').onclick = () => { calDisplayDate.setMonth(calDisplayDate.getMonth() + 1); refreshCalendar(); };
@@ -59,7 +86,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Init
   await fetchMemoDates();
   await refreshCalendar();
-});
+}
 
 async function fetchMemoDates() {
   const dates = await api.getAllMemoDates();
