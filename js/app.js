@@ -35,6 +35,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('prevMonthBtn').onclick = () => { calDisplayDate.setMonth(calDisplayDate.getMonth() - 1); refreshCalendar(); };
   document.getElementById('nextMonthBtn').onclick = () => { calDisplayDate.setMonth(calDisplayDate.getMonth() + 1); refreshCalendar(); };
   
+  document.getElementById('monthPicker').onchange = (e) => {
+    if(e.target.value) {
+      const parts = e.target.value.split('-');
+      calDisplayDate.setFullYear(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, 1);
+      refreshCalendar();
+    }
+  };
+  
   document.getElementById('searchToggleBtn').onclick = () => {
     document.getElementById('searchWrapper').classList.toggle('show');
     document.getElementById('searchResultsList').style.display = 'none';
@@ -62,6 +70,7 @@ async function refreshCalendar() {
   const year = calDisplayDate.getFullYear();
   const month = calDisplayDate.getMonth();
   document.getElementById('calTitle').innerText = `${year}년 ${month + 1}월`;
+  document.getElementById('monthPicker').value = `${year}-${String(month+1).padStart(2,'0')}`;
 
   const firstDay = new Date(year, month, 1);
   const lastDay = new Date(year, month + 1, 0);
@@ -131,7 +140,7 @@ function renderCalendarDays(year, month, firstDay, lastDay) {
       taskDiv.className = 'mini-task ' + (t.status === '완료' ? 'completed' : '');
       
       let desc = t.description;
-      if (desc.length > 8) desc = desc.substring(0, 8);
+      if (desc.length > 10) desc = desc.substring(0, 10);
       taskDiv.textContent = desc;
       
       div.appendChild(taskDiv);

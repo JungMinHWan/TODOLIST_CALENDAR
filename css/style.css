@@ -122,9 +122,9 @@ body {
 
 /* Mini Tasks inside Calendar */
 .mini-task {
-  font-size: 10px; font-weight: 600; padding: 2px 4px; border-radius: 4px;
+  font-size: 8.5px; font-weight: 600; padding: 2px 3px; border-radius: 4px;
   background: var(--theme-light-bg); color: var(--theme-primary-dark);
-  white-space: nowrap; overflow: hidden; letter-spacing: -0.5px;
+  white-space: nowrap; overflow: hidden; letter-spacing: -0.5px; margin-bottom: 2px;
 }
 .mini-task.completed {
   background: #f1f5f9; color: var(--text-muted);
