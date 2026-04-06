@@ -2,6 +2,7 @@ let calDisplayDate = new Date();
 let currentTasks = [];
 let memoDatesSet = new Set();
 let selectedDate = null; // Currently selected date in modal
+let globalSelectedDate = null; // Global selected date for quick add
 
 const HOLIDAYS = {
   '01-01': '신정', '03-01': '삼일절', '05-05': '어린이날', '06-06': '현충일',
@@ -83,6 +84,34 @@ async function initApp() {
   document.getElementById('btnAdd').onclick = addTask;
   document.getElementById('inputDescription').onkeypress = (e) => { if(e.key === 'Enter') addTask(); };
 
+  // Quick Add / FAB Events
+  const showQuickAdd = () => {
+    document.getElementById('quickAddDateLabel').innerText = formatDateKorean(globalSelectedDate || getTodayString());
+    document.getElementById('quickAddOverlay').classList.add('show');
+    document.getElementById('quickAddInput').focus();
+  };
+  document.getElementById('bottomFixedBar').onclick = showQuickAdd;
+  document.getElementById('fabBtn').onclick = showQuickAdd;
+  document.getElementById('closeQuickAddBtn').onclick = () => document.getElementById('quickAddOverlay').classList.remove('show');
+  
+  const handleQuickAddSubmit = async () => {
+    const desc = document.getElementById('quickAddInput').value.trim();
+    if(!desc) return;
+    const targetDate = globalSelectedDate || getTodayString();
+    document.getElementById('quickAddSubmitBtn').disabled = true;
+    const res = await api.addTaskWithDate(desc, targetDate, targetDate);
+    if(res.success) {
+      document.getElementById('quickAddInput').value = '';
+      document.getElementById('quickAddOverlay').classList.remove('show');
+      await refreshCalendar();
+    } else {
+      alert('추가에 실패했습니다.');
+    }
+    document.getElementById('quickAddSubmitBtn').disabled = false;
+  };
+  document.getElementById('quickAddSubmitBtn').onclick = handleQuickAddSubmit;
+  document.getElementById('quickAddInput').onkeypress = (e) => { if(e.key === 'Enter') handleQuickAddSubmit(); };
+
   // Init
   await fetchMemoDates();
   await refreshCalendar();
@@ -117,7 +146,7 @@ async function refreshCalendar() {
 function renderCalendarDays(year, month, firstDay, lastDay) {
   const startDayOfWeek = firstDay.getDay();
   const daysInMonth = lastDay.getDate();
-  const textLimit = 3; // Max tasks to show per block
+  const textLimit = 2; // Max tasks to show per block
 
   const grid = document.getElementById('calDaysGrid');
   grid.innerHTML = '';
@@ -140,8 +169,14 @@ function renderCalendarDays(year, month, firstDay, lastDay) {
     const div = document.createElement('div');
     div.className = 'cal-day';
     if (dateStr === todayStr) div.classList.add('today');
+    if (dateStr === globalSelectedDate) div.classList.add('global-selected');
     
-    div.onclick = () => openDayModal(dateStr, dayTasks);
+    div.onclick = () => {
+      globalSelectedDate = dateStr;
+      document.querySelectorAll('.cal-day').forEach(el => el.classList.remove('global-selected'));
+      div.classList.add('global-selected');
+      openDayModal(dateStr, dayTasks);
+    };
 
     // Day Number
     const numDiv = document.createElement('div');
@@ -176,7 +211,7 @@ function renderCalendarDays(year, month, firstDay, lastDay) {
     if(count > textLimit) {
       const moreBtn = document.createElement('button');
       moreBtn.className = 'more-btn';
-      moreBtn.innerText = `+ ${count - textLimit}개 더보기`;
+      moreBtn.innerText = `+${count - textLimit}개`;
       div.appendChild(moreBtn);
     }
     
