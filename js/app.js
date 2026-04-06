@@ -114,16 +114,23 @@ async function initApp() {
 
   // Swipe detection for calendar month change
   let touchStartX = 0;
+  let touchStartY = 0;
   let touchEndX = 0;
+  let touchEndY = 0;
   const calContainer = document.querySelector('.full-calendar-container');
   calContainer.addEventListener('touchstart', e => {
     touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
   }, { passive: true });
   calContainer.addEventListener('touchend', e => {
     touchEndX = e.changedTouches[0].screenX;
-    const minDistance = 50;
-    if (touchEndX < touchStartX - minDistance) document.getElementById('nextMonthBtn').click();
-    if (touchEndX > touchStartX + minDistance) document.getElementById('prevMonthBtn').click();
+    touchEndY = e.changedTouches[0].screenY;
+    const minDistance = 80;
+    const yConstraint = 60; // Max allowed vertical distance to count as a swipe
+    if (Math.abs(touchEndY - touchStartY) <= yConstraint) {
+      if (touchEndX < touchStartX - minDistance) document.getElementById('nextMonthBtn').click();
+      if (touchEndX > touchStartX + minDistance) document.getElementById('prevMonthBtn').click();
+    }
   }, { passive: true });
 
   // Init
