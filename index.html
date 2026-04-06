@@ -99,16 +99,24 @@
           </div>
         </div>
       </div>
+
+      <!-- Add Task Footer (Restored) -->
+      <div class="modal-footer">
+        <div class="add-form-inner">
+          <input type="text" class="input-description" id="inputDescription" placeholder="새로운 할일을 입력하세요...">
+          <button class="btn-add" id="btnAdd">추가</button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Bottom Fixed Input Bar -->
-  <div class="bottom-fixed-bar" id="bottomFixedBar">
-    <div class="fake-input">일정 추가</div>
+  <!-- Floating Input and FAB Container -->
+  <div class="fab-container">
+    <div class="floating-quick-add" id="bottomFixedBar">
+      <div class="fake-input">일정 추가</div>
+    </div>
+    <button class="fab-btn" id="fabBtn">+</button>
   </div>
-
-  <!-- FAB -->
-  <button class="fab-btn" id="fabBtn">+</button>
 
   <!-- Bottom Sheet for Quick Add -->
   <div class="bottom-sheet-overlay" id="quickAddOverlay">

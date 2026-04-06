@@ -112,6 +112,20 @@ async function initApp() {
   document.getElementById('quickAddSubmitBtn').onclick = handleQuickAddSubmit;
   document.getElementById('quickAddInput').onkeypress = (e) => { if(e.key === 'Enter') handleQuickAddSubmit(); };
 
+  // Swipe detection for calendar month change
+  let touchStartX = 0;
+  let touchEndX = 0;
+  const calContainer = document.querySelector('.full-calendar-container');
+  calContainer.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+  calContainer.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    const minDistance = 50;
+    if (touchEndX < touchStartX - minDistance) document.getElementById('nextMonthBtn').click();
+    if (touchEndX > touchStartX + minDistance) document.getElementById('prevMonthBtn').click();
+  }, { passive: true });
+
   // Init
   await fetchMemoDates();
   await refreshCalendar();

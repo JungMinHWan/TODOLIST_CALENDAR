@@ -37,14 +37,15 @@ body {
 
 /* Header */
 .header {
-  background: var(--theme-header-bg);
+  background: white;
   color: var(--text-main);
-  padding: 16px 20px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   flex-shrink: 0;
   z-index: 10;
 }
-.header-top { display: flex; justify-content: space-between; align-items: center; }
+.header-top { 
+  display: flex; justify-content: space-between; align-items: center; 
+  background: var(--theme-header-bg); padding: 16px 20px;
+}
 .header-title { font-size: 20px; font-weight: 700; display: flex; align-items: center; gap: 8px; font-family: 'Jua', sans-serif; margin: 0; }
 .header-profile { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 .header-actions { display: flex; gap: 10px; }
@@ -78,7 +79,7 @@ body {
 
 .cal-header-row {
   display: flex; justify-content: center; align-items: center; gap: 15px;
-  padding: 10px 0;
+  padding: 12px 20px; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 .month-picker-label { position: relative; cursor: pointer; display: inline-block; }
 .hidden-month-picker { position: absolute; opacity: 0; left: 0; top: 0; width: 100%; height: 100%; cursor: pointer; }
@@ -229,27 +230,29 @@ body {
 .spinner { width: 30px; height: 30px; border: 3px solid var(--theme-light-bg); border-top-color: var(--theme-primary); border-radius: 50%; animation: spin 0.8s infinite cubic-bezier(0.4, 0, 0.2, 1); }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* Quick Add Bottom Bar */
-.bottom-fixed-bar {
-  position: sticky; bottom: 0; left: 0; width: 100%; background: white;
-  padding: 12px 20px; border-top: 1px solid var(--border-color);
-  box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 50;
-  padding-bottom: max(12px, env(safe-area-inset-bottom));
+/* Floating Input and FAB */
+.fab-container {
+  position: fixed; right: 20px; bottom: max(20px, env(safe-area-inset-bottom));
+  display: flex; align-items: center; gap: 12px; z-index: 60;
 }
-.fake-input {
-  background: var(--bg-color); color: var(--text-muted);
-  padding: 12px 16px; border-radius: 24px; font-size: 16px; font-weight: 600;
-  cursor: text; border: 1px solid var(--border-color); font-family: inherit;
+
+.floating-quick-add .fake-input {
+  background: white; color: var(--text-muted);
+  padding: 14px 20px; border-radius: 28px; font-size: 15px; font-weight: 600;
+  cursor: pointer; border: 1px solid var(--border-color); font-family: inherit;
+  box-shadow: var(--shadow-float); transition: background-color 0.2s;
+  white-space: nowrap; height: 56px; display: flex; align-items: center;
 }
+.floating-quick-add .fake-input:hover { background: #f8fafc; }
 
 /* FAB */
 .fab-btn {
-  position: fixed; right: 20px; bottom: calc(85px + env(safe-area-inset-bottom));
   width: 56px; height: 56px; border-radius: 50%;
   background: var(--theme-primary); color: white;
   font-size: 28px; display: flex; justify-content: center; align-items: center;
-  border: none; box-shadow: var(--shadow-float); cursor: pointer; z-index: 60;
-  transition: transform 0.2s; font-family: inherit; font-weight: normal; padding-bottom: 2px;
+  border: none; box-shadow: var(--shadow-float); cursor: pointer; flex-shrink: 0;
+  transition: transform 0.2s; font-family: inherit; font-weight: normal; 
+  padding: 0; line-height: 1; margin-bottom: 4px; /* tweak to perfectly optical center */
 }
 .fab-btn:hover { transform: scale(1.05); background: var(--theme-primary-dark); }
 
