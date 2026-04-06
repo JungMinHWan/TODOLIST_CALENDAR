@@ -25,6 +25,13 @@ function formatDateString(d) {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 
+function getLocalDateBounds(dateStr) {
+  const [y, m, d] = dateStr.split('-');
+  const s = new Date(y, parseInt(m, 10) - 1, d);
+  const e = new Date(y, parseInt(m, 10) - 1, parseInt(d, 10) + 1);
+  return { startIso: s.toISOString(), endIso: e.toISOString() };
+}
+
 function formatDateKorean(dateStr) {
   const d = new Date(dateStr);
   const w = ['일','월','화','수','목','금','토'];
@@ -256,9 +263,8 @@ async function openDayModal(dateStr, initialTasks) {
   memoEl.disabled = false;
   
   // Also refetch tasks in background just in case we need latest
-  const s = new Date(dateStr);
-  const e = new Date(s.getTime() + 86400000);
-  const latestTasks = await api.getTasksByDateRange(s.toISOString(), e.toISOString());
+  const { startIso, endIso } = getLocalDateBounds(dateStr);
+  const latestTasks = await api.getTasksByDateRange(startIso, endIso);
   renderModalTasks(latestTasks);
 }
 
@@ -293,9 +299,8 @@ async function reloadModalTasks() {
   const list = document.getElementById('modalTaskList');
   list.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
   
-  const s = new Date(selectedDate);
-  const e = new Date(s.getTime() + 86400000);
-  const latestTasks = await api.getTasksByDateRange(s.toISOString(), e.toISOString());
+  const { startIso, endIso } = getLocalDateBounds(selectedDate);
+  const latestTasks = await api.getTasksByDateRange(startIso, endIso);
   renderModalTasks(latestTasks);
   
   // also refresh main calendar
