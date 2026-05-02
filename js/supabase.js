@@ -1,5 +1,5 @@
-const SUPABASE_URL = 'https://fhogtdagkawptvzmyvku.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZob2d0ZGFna2F3cHR2em15dmt1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzNzg2NDEsImV4cCI6MjA5MDk1NDY0MX0.UnFnKkUJsOR4CfLZ2-0R0_k9_Mt3h0B3EiQXmRw6n9A';
+const SUPABASE_URL = 'https://xeawqnnugytabmaixrcv.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_WxcNUC0k2QHjNfFitEd4gQ_P6DFDyv-';
 
 // Initialize Supabase Client
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -19,8 +19,6 @@ const api = {
       return [];
     }
   },
-
-
 
   async getDailyMemo(dateStr) {
     try {

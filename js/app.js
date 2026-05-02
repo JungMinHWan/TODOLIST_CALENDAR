@@ -168,6 +168,7 @@ async function refreshCalendar() {
   grid.innerHTML = '<div class="loading" style="grid-column: 1 / -1;"><div class="spinner"></div></div>';
 
   currentTasks = await api.getTasksByDateRange(startIso, endIso);
+  await fetchMemoDates();
   renderCalendarDays(year, month, firstDay, lastDay);
 }
 
